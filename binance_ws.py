@@ -1,13 +1,3 @@
-'''
-    Asynchronus Binance Websocket Server
-    Author: Mo Sharieff
-    Date: 12-27-2018
-
-    This script will act as a client and a server in which it streams
-    raw websocket data from Binance, formats the data, and outputs
-    it as its own websocket server.
-'''
-
 import websockets
 import asyncio
 import json
