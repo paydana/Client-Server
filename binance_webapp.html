@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<title>Binance Web Application</title>
+<head>
+    <style>
+    #bg-grad {
+        height: 100%;
+        background-color: red;
+        background-image: linear-gradient(blue, black);
+    }
+    </style>
+</head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+
+<div class="w3-sidebar w3-bar-block w3-black w3-card" style="width:130px">
+  <h5 class="w3-bar-item">Binance</h5>
+  <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'klines')">Candle Sticks</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'book')">Order Book</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'trade')">Trade Event</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'ticker')">Ticker Change</button>
+  <button class="w3-bar-item w3-button tablink" onclick="openLink(event, 'aggTrade')">Aggregated Trades</button>
+</div>
+
+<div style="margin-left:130px">
+  <div class="w3-padding">Binance WebSocket WebApp</div>
+
+  <div id="klines" class="w3-container city w3-animate-bottom" style="display:none">
+  </div>
+
+  <div id="book" class="w3-container city w3-animate-left" style="display:none">
+  </div>
+
+  <div id="trade" class="w3-container city w3-animate-top" style="display:none">
+  </div>
+
+  <div id="ticker" class="w3-container city w3-animate-right" style="display:none">
+  </div>
+
+  <div id="aggTrade" class="w3-container city w3-animate-bottom" style="display:none">
+  </div>
+
+</div>
+
+<script>
+    function openLink(evt, animName) {
+      var i, x, tablinks;
+      x = document.getElementsByClassName("city");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" w3-blue", "");
+      }
+      document.getElementById(animName).style.display = "block";
+      evt.currentTarget.className += " w3-blue";
+    }
+</script>
+<script language = "javascript" type = "text/javascript">
+    
+    function init(){
+        klines = document.getElementById("klines");
+        book = document.getElementById("book");
+        trade = document.getElementById("trade");
+        ticker = document.getElementById("ticker");
+        aggTrade = document.getElementById("aggTrade");
+        
+        WebSocketX();
+    }
+
+    function WebSocketX() {
+
+        var ws = new WebSocket("ws://127.0.0.1:5678/");
+
+        ws.onmessage = function (evt) {
+            var parsed_json = JSON.parse(evt.data);
+            
+            if(parsed_json["Tag"] == "klines")
+            {
+                klines.innerHTML = JSON.stringify(parsed_json["Data"]);   
+            }
+            if(parsed_json["Tag"] == "book")
+            {
+                book.innerHTML = JSON.stringify(parsed_json["Data"]);   
+            }
+            if(parsed_json["Tag"] == "trade")
+            {
+                trade.innerHTML = JSON.stringify(parsed_json["Data"]);   
+            }
+            if(parsed_json["Tag"] == "ticker")
+            {
+                ticker.innerHTML = JSON.stringify(parsed_json["Data"]);   
+            }
+            if(parsed_json["Tag"] == "aggTrade")
+            {
+                aggTrade.innerHTML = JSON.stringify(parsed_json["Data"]);   
+            }
+            
+            
+        };
+
+        ws.onclose = function() {
+
+        };
+    }
+
+    window.addEventListener("load", init, false);
+
+</script>
+</body>
+</html>
